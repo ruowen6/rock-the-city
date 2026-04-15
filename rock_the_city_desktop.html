@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock the City — Brilliant City</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #2D3436;
+  color: #2D3436;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  height: 100vh;
+}
+
+/* === LEFT SIDEBAR === */
+.sidebar {
+  background: #FFF8E7;
+  display: flex;
+  flex-direction: column;
+  border-right: 3px solid #E8D5A0;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  background: linear-gradient(135deg, #FFD93D 0%, #F4A261 100%);
+  padding: 24px 24px 20px;
+}
+.logo-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.logo { font-size: 28px; font-weight: 900; color: #2D3436; letter-spacing: -0.5px; line-height: 1.1; }
+.logo span { color: #E76F51; }
+.subtitle { font-size: 12px; color: #8B6914; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+.mayor-icon {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  border: 3px solid rgba(139,69,19,0.2);
+}
+
+/* Buzz Bar */
+.buzz-section { margin-top: 4px; }
+.buzz-label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.buzz-label-left {
+  font-size: 11px; font-weight: 800; color: #8B4513;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  display: flex; align-items: center; gap: 6px;
+}
+.buzz-value { font-size: 16px; font-weight: 900; color: #E76F51; }
+.buzz-bar {
+  background: rgba(255,255,255,0.5);
+  border-radius: 99px; height: 18px; overflow: hidden;
+  border: 2px solid rgba(139,69,19,0.15);
+}
+.buzz-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #E76F51, #FF6B6B);
+  width: 57%;
+  transition: width 1s ease;
+}
+
+/* Sidebar sections */
+.sidebar-body { padding: 20px 24px; flex: 1; }
+.section-title {
+  font-size: 11px; font-weight: 800; color: #8B6914;
+  text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::before {
+  content: ''; width: 3px; height: 14px;
+  background: #E76F51; border-radius: 99px;
+}
+
+/* Leaderboard */
+.leaderboard {
+  background: white;
+  border-radius: 14px;
+  padding: 4px 0;
+  border: 1.5px solid #E8D5A0;
+  margin-bottom: 24px;
+}
+.lb-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #F5F0E5;
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-rank {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900; flex-shrink: 0;
+}
+.lb-rank.gold { background: #FFD93D; color: #8B6914; }
+.lb-rank.silver { background: #C0C0C0; color: #555; }
+.lb-rank.bronze { background: #CD7F32; color: white; }
+.lb-team { flex: 1; font-size: 14px; font-weight: 700; }
+.lb-stones { font-size: 15px; font-weight: 900; color: #E76F51; }
+
+/* Stone Stats */
+.stone-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  border: 1.5px solid #E8D5A0;
+  text-align: center;
+}
+.stat-number { font-size: 28px; font-weight: 900; color: #E76F51; }
+.stat-label { font-size: 10px; font-weight: 700; color: #8B6914; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.stat-card.fatal .stat-number { color: #FF0000; }
+
+/* Action Button */
+.action-btn {
+  width: 100%;
+  background: #E76F51;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 99px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 6px 20px rgba(231,111,81,0.4);
+  letter-spacing: 0.5px;
+}
+.action-btn:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(231,111,81,0.5); }
+.action-btn:active { transform: scale(0.97); }
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #E8D5A0;
+  text-align: center;
+}
+.sidebar-footer p { font-size: 10px; color: #C9BA96; font-weight: 600; }
+
+/* === MAIN MAP AREA === */
+.map-area {
+  position: relative;
+  background: #F0E4C8;
+  overflow: hidden;
+}
+
+.map-svg {
+  width: 100%; height: 100%;
+}
+
+/* Map elements */
+.map-water { fill: #81ECEC; opacity: 0.5; }
+.map-park { fill: #A8E6CF; opacity: 0.6; }
+.map-road { stroke: #DDD0B3; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.map-road-main { stroke: #C9BA96; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.map-tram { stroke: #00B894; stroke-width: 2.5; fill: none; stroke-dasharray: 10 5; stroke-linecap: round; }
+
+.map-building { cursor: pointer; }
+.map-building:hover rect,
+.map-building:hover polygon { filter: brightness(1.15); }
+
+.building-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700; fill: #2D3436;
+  text-anchor: middle; pointer-events: none;
+}
+.building-label-sub {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  text-anchor: middle; pointer-events: none;
+}
+
+/* Stone markers */
+.stone-marker { cursor: pointer; }
+.stone-glow { fill: #E76F51; opacity: 0.15; }
+.stone-dot { fill: #E76F51; stroke: white; stroke-width: 2; }
+.stone-marker:hover .stone-glow { opacity: 0.35; }
+.stone-marker:hover .stone-dot { r: 7; }
+
+.stone-fatal .stone-dot { fill: #FF0000; }
+.stone-fatal .stone-glow { fill: #FF0000; }
+.stone-pulse {
+  animation: stonePulse 2s ease-in-out infinite;
+}
+@keyframes stonePulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.3; }
+}
+
+/* Unexplored */
+.unexplored-marker { cursor: pointer; opacity: 0.5; }
+.unexplored-marker:hover { opacity: 0.9; }
+.unexplored-dot { fill: none; stroke: #8B6914; stroke-width: 2; stroke-dasharray: 4 3; }
+
+/* City Hall glow */
+.cityhall-glow {
+  fill: #FFD93D; opacity: 0.25;
+  animation: chGlow 3s ease-in-out infinite;
+}
+@keyframes chGlow {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.1; }
+}
+
+/* === FLOATING TOOLTIP === */
+.tooltip {
+  position: absolute;
+  width: 320px;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.2), 0 0 0 2px rgba(232,213,160,0.5);
+  z-index: 50;
+  display: none;
+  pointer-events: auto;
+  animation: tooltipIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tooltip.active { display: block; }
+@keyframes tooltipIn {
+  from { opacity: 0; transform: scale(0.9) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.tooltip-arrow {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: white;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 0 rgba(232,213,160,0.5);
+}
+
+.tooltip-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 26px; height: 26px;
+  background: #F5F0E5;
+  border: none; border-radius: 50%;
+  font-size: 14px; color: #8B6914;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+}
+.tooltip-close:hover { background: #E8D5A0; }
+
+.tooltip-title { font-size: 17px; font-weight: 800; margin-bottom: 3px; padding-right: 30px; }
+.tooltip-subtitle { font-size: 11px; color: #8B6914; font-weight: 600; margin-bottom: 10px; }
+.tooltip-body { font-size: 13px; color: #636e72; line-height: 1.5; }
+.tooltip-body p { margin-bottom: 10px; }
+
+.tooltip-stones { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.t-chip {
+  background: #FFF0E5; border: 1.5px solid #F4A261;
+  border-radius: 99px; padding: 5px 12px;
+  font-size: 11px; font-weight: 700; color: #E76F51;
+}
+.t-chip.fatal { background: #FFE5E5; border-color: #FF6B6B; color: #FF0000; }
+.t-status { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.t-status.found { color: #00B894; }
+.t-status.fatal { color: #FF0000; }
+
+.t-buzz-bar {
+  background: #FFE0D0; border-radius: 99px; height: 10px; overflow: hidden; margin-top: 6px;
+}
+.t-buzz-fill { background: #E76F51; height: 100%; width: 57%; border-radius: 99px; }
+
+.t-unexplored {
+  background: #FFF8E7; border-radius: 10px; padding: 14px; text-align: center;
+}
+.t-unexplored p { font-size: 12px; color: #8B6914; margin-bottom: 10px; }
+.t-scout-btn {
+  background: #E76F51; color: white; border: none;
+  padding: 8px 20px; border-radius: 99px;
+  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer;
+}
+
+.t-stone-detail {
+  background: #FFF0E5; border-radius: 10px; padding: 12px; margin-bottom: 8px;
+}
+.t-stone-detail.fatal { background: #FFE5E5; border: 1.5px solid #FF6B6B; }
+.t-stone-name { font-size: 13px; font-weight: 800; color: #E76F51; margin-bottom: 2px; }
+.t-stone-detail.fatal .t-stone-name { color: #FF0000; }
+.t-stone-desc { font-size: 11px; color: #636e72; }
+.t-stone-meta {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: #8B6914; margin-top: 8px;
+}
+
+/* Catapult overlay */
+.catapult-overlay {
+  position: fixed; inset: 0;
+  background: rgba(45,52,54,0.88);
+  z-index: 300;
+  display: none;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.catapult-overlay.active { display: flex; }
+.catapult-scene { width: 400px; height: 320px; position: relative; }
+.catapult-stone {
+  width: 40px; height: 40px;
+  background: #B0A090;
+  border-radius: 8px; transform: rotate(45deg);
+  position: absolute; bottom: 80px; left: 50px;
+  box-shadow: inset -4px -4px 0 rgba(0,0,0,0.2);
+}
+.catapult-stone.launched {
+  animation: throwStone 1.2s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes throwStone {
+  0% { bottom: 80px; left: 50px; opacity: 1; transform: rotate(45deg) scale(1); }
+  50% { bottom: 300px; left: 220px; opacity: 1; transform: rotate(225deg) scale(0.8); }
+  100% { bottom: 160px; left: 330px; opacity: 0; transform: rotate(405deg) scale(0.3); }
+}
+.catapult-mayor {
+  position: absolute; top: 30px; right: 30px;
+  font-size: 80px;
+}
+.catapult-mayor.hit {
+  animation: mayorHit 0.6s ease 1.2s forwards;
+}
+@keyframes mayorHit {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-25deg) scale(1.15); }
+  50% { transform: rotate(18deg); }
+  75% { transform: rotate(-12deg) scale(0.95); }
+  100% { transform: rotate(0deg); }
+}
+.catapult-result {
+  color: white; text-align: center; margin-top: 24px;
+  opacity: 0; transform: translateY(20px);
+}
+.catapult-result.show { animation: fadeUp 0.5s ease 1.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.catapult-result .hit-text { font-size: 32px; font-weight: 900; color: #00B894; }
+.catapult-result .hit-sub { font-size: 16px; opacity: 0.7; margin-top: 6px; }
+.catapult-close {
+  margin-top: 28px; background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.25);
+  color: white; padding: 12px 36px; border-radius: 99px;
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; opacity: 0;
+}
+.catapult-close.show { animation: fadeUp 0.5s ease 2.3s forwards; }
+.catapult-close:hover { background: rgba(255,255,255,0.2); }
+
+/* Legend overlay on map */
+.map-legend {
+  position: absolute; bottom: 20px; right: 20px;
+  background: rgba(255,248,231,0.92);
+  border-radius: 12px; padding: 14px 18px;
+  border: 1.5px solid #E8D5A0;
+  backdrop-filter: blur(8px);
+}
+.legend-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 6px; font-size: 12px; font-weight: 600; color: #2D3436;
+}
+.legend-row:last-child { margin-bottom: 0; }
+.legend-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-row">
+        <div>
+          <div class="logo">Rock the <span>City</span></div>
+          <div class="subtitle">Brilliant City</div>
+        </div>
+        <div class="mayor-icon">🦟</div>
+      </div>
+      <div class="buzz-section">
+        <div class="buzz-label">
+          <div class="buzz-label-left">📢 Buzz level</div>
+          <div class="buzz-value">17 / 30</div>
+        </div>
+        <div class="buzz-bar">
+          <div class="buzz-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-body">
+      <!-- Stats -->
+      <div class="section-title">Stone count</div>
+      <div class="stone-stats">
+        <div class="stat-card">
+          <div class="stat-number">17</div>
+          <div class="stat-label">Stones thrown</div>
+        </div>
+        <div class="stat-card fatal">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Fatal stones</div>
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="section-title">Top slingers</div>
+      <div class="leaderboard">
+        <div class="lb-row">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-team">Team Raid</div>
+          <div class="lb-stones">8</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank silver">2</div>
+          <div class="lb-team">Pebble Squad</div>
+          <div class="lb-stones">5</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-team">Bug Hunters</div>
+          <div class="lb-stones">4</div>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <button class="action-btn" onclick="showCatapult()" style="margin-top:20px;">
+        📸 Spot a flaw — throw a stone!
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <p>A gamified method for youth participation</p>
+      <p style="color:#8B6914; margin-top:3px;">GameIN Erasmus+ · Rock the City · 2026</p>
+    </div>
+  </aside>
+
+  <!-- MAIN MAP -->
+  <main class="map-area" id="mapArea" onclick="handleMapClick(event)">
+    <svg class="map-svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="900" height="600" fill="#F0E4C8"/>
+
+      <!-- Lakes -->
+      <ellipse cx="120" cy="300" rx="65" ry="85" class="map-water"/>
+      <text x="120" y="305" font-family="Nunito" font-size="10" fill="#0984E3" text-anchor="middle" font-weight="700" opacity="0.6">Suolijärvi</text>
+
+      <ellipse cx="480" cy="380" rx="50" ry="35" class="map-water"/>
+      <text x="480" y="384" font-family="Nunito" font-size="9" fill="#0984E3" text-anchor="middle" font-weight="700" opacity="0.6">Ahvenisjärvi</text>
+
+      <!-- Parks -->
+      <ellipse cx="440" cy="340" rx="85" ry="50" class="map-park"/>
+      <text x="440" y="330" font-family="Nunito" font-size="9" fill="#00B894" text-anchor="middle" font-weight="700" opacity="0.6">Ahvenispuisto</text>
+
+      <ellipse cx="600" cy="510" rx="80" ry="50" class="map-park"/>
+      <text x="600" y="505" font-family="Nunito" font-size="9" fill="#00B894" text-anchor="middle" font-weight="700" opacity="0.6">Näyttelijänpuisto</text>
+
+      <!-- Roads -->
+      <path d="M430 0 L430 80 Q425 120 405 155 L340 250 Q320 285 320 310 L320 420 Q320 470 340 510 L380 600" class="map-road-main"/>
+      <path d="M0 190 L200 190 Q260 190 340 250" class="map-road-main"/>
+      <path d="M600 120 L490 170 Q440 195 405 230" class="map-road"/>
+      <path d="M320 310 L530 280 Q590 270 650 260 L900 220" class="map-road"/>
+      <path d="M320 380 L220 410 Q180 425 150 450 L80 600" class="map-road"/>
+      <path d="M320 380 L580 370 Q650 370 720 390 L900 430" class="map-road"/>
+      <path d="M530 280 L530 420 Q530 460 540 500 L560 600" class="map-road"/>
+
+      <!-- Tram -->
+      <path d="M425 0 L422 75 Q418 115 400 150 L335 245 Q315 280 315 305 L315 415 Q315 465 335 505 L375 600" class="map-tram"/>
+      <text x="290" y="220" font-family="Nunito" font-size="9" fill="#00B894" font-weight="700" transform="rotate(-68 290 220)" opacity="0.7">TRAM LINE 3</text>
+
+      <!-- === BUILDINGS === -->
+
+      <!-- DUO / City Hall -->
+      <g class="map-building" data-id="cityhall">
+        <circle cx="335" cy="240" class="cityhall-glow" r="28"/>
+        <rect x="305" y="220" width="60" height="42" rx="6" fill="#FFD93D" stroke="#E76F51" stroke-width="2.5"/>
+        <rect x="311" y="214" width="48" height="9" rx="3" fill="#E76F51" opacity="0.85"/>
+        <text x="335" y="244" class="building-label" font-size="10" fill="#8B4513" font-weight="800">CITY HALL</text>
+        <text x="335" y="255" class="building-label" font-size="7" fill="#E76F51">🦟 Mayor Brillia</text>
+      </g>
+
+      <!-- University Campus -->
+      <g class="map-building" data-id="campus">
+        <rect x="480" y="140" width="100" height="55" rx="6" fill="#B8D4E3" stroke="#7FB3D3" stroke-width="2"/>
+        <rect x="488" y="134" width="35" height="8" rx="3" fill="#7FB3D3"/>
+        <rect x="535" y="134" width="25" height="8" rx="3" fill="#7FB3D3"/>
+        <text x="530" y="172" class="building-label" font-size="11">University Campus</text>
+        <text x="530" y="184" class="building-label-sub" font-size="8" fill="#6B8FA3">Tampere University</text>
+      </g>
+
+      <!-- Library -->
+      <g class="map-building" data-id="library">
+        <rect x="210" y="160" width="55" height="35" rx="6" fill="#D5A6E6" stroke="#B07CC6" stroke-width="2"/>
+        <rect x="218" y="155" width="38" height="7" rx="3" fill="#B07CC6" opacity="0.6"/>
+        <text x="238" y="182" class="building-label" font-size="10">Library</text>
+      </g>
+
+      <!-- Mikontalo -->
+      <g class="map-building" data-id="mikontalo">
+        <rect x="630" y="220" width="55" height="65" rx="6" fill="#FFB7B2" stroke="#E88E87" stroke-width="2"/>
+        <rect x="638" y="232" width="16" height="14" rx="2" fill="white" opacity="0.5"/>
+        <rect x="660" y="232" width="16" height="14" rx="2" fill="white" opacity="0.5"/>
+        <rect x="638" y="253" width="16" height="14" rx="2" fill="white" opacity="0.5"/>
+        <rect x="660" y="253" width="16" height="14" rx="2" fill="white" opacity="0.5"/>
+        <text x="658" y="215" class="building-label" font-size="10">Mikontalo</text>
+      </g>
+
+      <!-- Police Museum -->
+      <g class="map-building" data-id="police">
+        <rect x="310" y="130" width="50" height="35" rx="6" fill="#AED9E0" stroke="#7FB3C0" stroke-width="2"/>
+        <text x="335" y="150" class="building-label" font-size="9">Police</text>
+        <text x="335" y="160" class="building-label-sub" font-size="7" fill="#5A9DAD">Museum</text>
+      </g>
+
+      <!-- Hervannan Grilli -->
+      <g class="map-building" data-id="grilli">
+        <rect x="360" y="310" width="48" height="28" rx="6" fill="#FFE0B2" stroke="#FFB74D" stroke-width="2"/>
+        <text x="384" y="328" class="building-label" font-size="9">Grilli 🍔</text>
+      </g>
+
+      <!-- Ski Hill -->
+      <g class="map-building" data-id="ski">
+        <polygon points="445,30 475,80 415,80" fill="#C8E6C9" stroke="#81C784" stroke-width="2"/>
+        <text x="445" y="100" class="building-label" font-size="9">Ski Hill ⛷️</text>
+      </g>
+
+      <!-- Underground Pool -->
+      <g class="map-building" data-id="swim">
+        <rect x="190" y="340" width="50" height="30" rx="15" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/>
+        <text x="215" y="360" class="building-label" font-size="8" fill="#0277BD">Pool 🏊</text>
+      </g>
+
+      <!-- === STONES (discovered) === -->
+      <g class="stone-marker" data-id="stone1">
+        <circle cx="540" cy="195" r="14" class="stone-glow stone-pulse"/>
+        <circle cx="540" cy="195" r="6" class="stone-dot"/>
+      </g>
+      <g class="stone-marker" data-id="stone2">
+        <circle cx="290" cy="275" r="14" class="stone-glow stone-pulse"/>
+        <circle cx="290" cy="275" r="6" class="stone-dot"/>
+      </g>
+      <g class="stone-marker" data-id="stone3">
+        <circle cx="660" cy="265" r="14" class="stone-glow stone-pulse"/>
+        <circle cx="660" cy="265" r="6" class="stone-dot"/>
+      </g>
+      <g class="stone-marker stone-fatal" data-id="stone4">
+        <circle cx="350" cy="175" r="16" class="stone-glow stone-pulse"/>
+        <circle cx="350" cy="175" r="7" class="stone-dot"/>
+        <text x="350" y="163" font-family="Nunito" font-size="11" fill="#FF0000" text-anchor="middle" font-weight="900">!</text>
+      </g>
+      <g class="stone-marker" data-id="stone5">
+        <circle cx="420" cy="340" r="14" class="stone-glow stone-pulse"/>
+        <circle cx="420" cy="340" r="6" class="stone-dot"/>
+      </g>
+
+      <!-- === UNEXPLORED === -->
+      <g class="unexplored-marker" data-id="unexplored1">
+        <circle cx="740" cy="370" r="10" class="unexplored-dot"/>
+        <text x="740" y="374" font-family="Nunito" font-size="12" fill="#8B6914" text-anchor="middle" font-weight="800">?</text>
+      </g>
+      <g class="unexplored-marker" data-id="unexplored2">
+        <circle cx="160" cy="450" r="10" class="unexplored-dot"/>
+        <text x="160" y="454" font-family="Nunito" font-size="12" fill="#8B6914" text-anchor="middle" font-weight="800">?</text>
+      </g>
+      <g class="unexplored-marker" data-id="unexplored3">
+        <circle cx="640" cy="490" r="10" class="unexplored-dot"/>
+        <text x="640" y="494" font-family="Nunito" font-size="12" fill="#8B6914" text-anchor="middle" font-weight="800">?</text>
+      </g>
+      <g class="unexplored-marker" data-id="unexplored4">
+        <circle cx="250" cy="500" r="10" class="unexplored-dot"/>
+        <text x="250" y="504" font-family="Nunito" font-size="12" fill="#8B6914" text-anchor="middle" font-weight="800">?</text>
+      </g>
+    </svg>
+
+    <!-- Legend -->
+    <div class="map-legend">
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#E76F51; border: 2px solid white;"></div>
+        Stone found
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#FF0000; border: 2px solid white;"></div>
+        Fatal stone!
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="border: 2px dashed #8B6914;"></div>
+        Unexplored zone
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#FFD93D; border: 2px solid #E76F51;"></div>
+        City Hall (boss)
+      </div>
+    </div>
+
+    <!-- Floating Tooltip -->
+    <div class="tooltip" id="tooltip">
+      <button class="tooltip-close" onclick="hideTooltip()">✕</button>
+      <div class="tooltip-arrow" id="tooltipArrow"></div>
+      <div id="tooltipContent"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Catapult Overlay -->
+<div class="catapult-overlay" id="catapultOverlay">
+  <div class="catapult-scene">
+    <div class="catapult-mayor" id="catapultMayor">🦟</div>
+    <div class="catapult-stone" id="catapultStone"></div>
+  </div>
+  <div class="catapult-result" id="catapultResult">
+    <div class="hit-text">Direct hit!</div>
+    <div class="hit-sub">Stone approved — Buzz Level -1</div>
+  </div>
+  <button class="catapult-close" id="catapultClose" onclick="hideCatapult()">Back to map</button>
+</div>
+
+<script>
+const tooltipData = {
+  cityhall: {
+    title: "🦟 Brillia's City Hall",
+    sub: "Formerly known as DUO Shopping Center",
+    body: `<p>Mayor Brillia has converted the beloved DUO into his personal headquarters. The buzzing never stops here.</p>
+    <div style="margin:12px 0;">
+      <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700;">
+        <span style="color:#E76F51;">BUZZ LEVEL</span><span style="color:#E76F51;">17 / 30</span>
+      </div>
+      <div class="t-buzz-bar"><div class="t-buzz-fill"></div></div>
+    </div>
+    <p style="font-size:12px; color:#8B6914; font-weight:700;">13 more stones to trigger the Brilliant Revolution!</p>`
+  },
+  campus: {
+    title: "🏫 University Campus",
+    sub: "Tampere University — Hervanta",
+    body: `<p>Hub of 8,000 students. The resistance brews strongest here.</p>
+    <div class="tooltip-stones"><div class="t-chip">Broken bike rack</div></div>
+    <div class="t-status found">✓ 1 stone found</div>`
+  },
+  library: {
+    title: "📚 Hervanta Library",
+    sub: "Knowledge center of Brilliant City",
+    body: `<p>Even Brillia can't silence the truth hidden in books.</p>
+    <div class="t-unexplored"><p>No stones found yet.</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  mikontalo: {
+    title: "🏢 Mikontalo",
+    sub: "Student housing complex — 600+ residents",
+    body: `<p>Home to hundreds of students. Brillia raised the rent again.</p>
+    <div class="tooltip-stones"><div class="t-chip">Graffiti on wall</div><div class="t-chip">Broken elevator</div></div>
+    <div class="t-status found">✓ 2 stones found</div>`
+  },
+  police: {
+    title: "🏛️ Police Museum",
+    sub: "National Police Museum",
+    body: `<p>Brillia's personal guards are stationed here. Watch your step.</p>
+    <div class="t-unexplored"><p>No stones found yet. Approach with caution!</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  grilli: {
+    title: "🍔 Hervannan Grilli",
+    sub: "Legendary kebab spot",
+    body: `<p>Even revolutionaries need to eat. The kebabs fuel the resistance.</p>
+    <div class="tooltip-stones"><div class="t-chip">Overflowing trash bin</div></div>
+    <div class="t-status found">✓ 1 stone found</div>`
+  },
+  ski: {
+    title: "⛷️ Ski Hill",
+    sub: "Lukonmäki ski center — north gate",
+    body: `<p>Brilliant City's northern lookout. From here you can see everything Brillia ruined.</p>
+    <div class="t-unexplored"><p>No stones found yet.</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  swim: {
+    title: "🏊 Underground Pool",
+    sub: "Built 30m underground in solid rock",
+    body: `<p>Hervanta's hidden gem, carved from bedrock in the 80s. Brillia hasn't found it yet.</p>
+    <div class="t-unexplored"><p>No stones found yet. Dive in!</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  stone1: {
+    title: "🪨 Stone #012",
+    sub: "Near University Campus",
+    body: `<div class="t-stone-detail"><div class="t-stone-name">Broken bike rack</div><div class="t-stone-desc">Metal rack bent and unusable. 4 bikes can't park here.</div></div>
+    <div class="t-stone-meta"><span>By: Team Raid</span><span style="color:#00B894; font-weight:700;">✓ Approved</span></div>`
+  },
+  stone2: {
+    title: "🪨 Stone #007",
+    sub: "Near City Hall",
+    body: `<div class="t-stone-detail"><div class="t-stone-name">Faded crosswalk</div><div class="t-stone-desc">Crosswalk markings nearly invisible. Pedestrian safety risk.</div></div>
+    <div class="t-stone-meta"><span>By: Pebble Squad</span><span style="color:#00B894; font-weight:700;">✓ Approved</span></div>`
+  },
+  stone3: {
+    title: "🪨 Stone #015",
+    sub: "Near Mikontalo",
+    body: `<div class="t-stone-detail"><div class="t-stone-name">Broken elevator</div><div class="t-stone-desc">Building elevator out of service for 2 weeks. Accessibility issue.</div></div>
+    <div class="t-stone-meta"><span>By: Team Raid</span><span style="color:#00B894; font-weight:700;">✓ Approved</span></div>`
+  },
+  stone4: {
+    title: "💀 Fatal Stone #003",
+    sub: "Near Police Museum — DANGER!",
+    body: `<div class="t-stone-detail fatal"><div class="t-stone-name">⚠️ Collapsed sidewalk</div><div class="t-stone-desc">Major crack and sinkhole forming. Immediate hazard!</div></div>
+    <div style="background:#FFF0E5; border-radius:8px; padding:10px; text-align:center; margin:8px 0;">
+      <div style="font-size:12px; font-weight:800; color:#E76F51;">FATAL STONE — 3x damage!</div>
+      <div style="font-size:11px; color:#8B6914; margin-top:3px;">Use now or save for the final blow?</div>
+    </div>
+    <div class="t-stone-meta"><span>By: Bug Hunters</span><span class="t-status fatal">⚡ Fatal</span></div>`
+  },
+  stone5: {
+    title: "🪨 Stone #019",
+    sub: "Near Ahvenispuisto",
+    body: `<div class="t-stone-detail"><div class="t-stone-name">Overflowing trash bin</div><div class="t-stone-desc">Park trash bin not emptied. Litter spreading to the path.</div></div>
+    <div class="t-stone-meta"><span>By: Pebble Squad</span><span style="color:#00B894; font-weight:700;">✓ Approved</span></div>`
+  },
+  unexplored1: {
+    title: "❓ Unexplored zone",
+    sub: "Eastern district",
+    body: `<div class="t-unexplored"><p>This area hasn't been scouted. Who knows what Brillia is hiding?</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  unexplored2: {
+    title: "❓ Unexplored zone",
+    sub: "Lakeside trail",
+    body: `<div class="t-unexplored"><p>Rumors say the path around the lake has been neglected.</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  unexplored3: {
+    title: "❓ Unexplored zone",
+    sub: "Southern park",
+    body: `<div class="t-unexplored"><p>Disc golf track — has Brillia let it fall apart?</p><button class="t-scout-btn">Scout this area</button></div>`
+  },
+  unexplored4: {
+    title: "❓ Unexplored zone",
+    sub: "Southwest residential",
+    body: `<div class="t-unexplored"><p>A quiet corner. Quiet... too quiet.</p><button class="t-scout-btn">Scout this area</button></div>`
+  }
+};
+
+const tooltip = document.getElementById('tooltip');
+const tooltipArrow = document.getElementById('tooltipArrow');
+const tooltipContent = document.getElementById('tooltipContent');
+const mapArea = document.getElementById('mapArea');
+
+function handleMapClick(e) {
+  const el = e.target.closest('[data-id]');
+  if (!el) { hideTooltip(); return; }
+  const id = el.dataset.id;
+  const data = tooltipData[id];
+  if (!data) return;
+
+  tooltipContent.innerHTML = `
+    <div class="tooltip-title">${data.title}</div>
+    <div class="tooltip-subtitle">${data.sub}</div>
+    <div class="tooltip-body">${data.body}</div>
+  `;
+
+  const svg = document.querySelector('.map-svg');
+  const svgRect = svg.getBoundingClientRect();
+  const bbox = el.getBoundingClientRect();
+  const cx = bbox.left + bbox.width / 2 - mapArea.getBoundingClientRect().left;
+  const cy = bbox.top + bbox.height / 2 - mapArea.getBoundingClientRect().top;
+
+  tooltip.style.display = 'block';
+  tooltip.className = 'tooltip active';
+
+  const tw = 320;
+  const th = tooltip.offsetHeight;
+  const mapW = mapArea.offsetWidth;
+  const mapH = mapArea.offsetHeight;
+
+  let left = cx - tw / 2;
+  let top = cy - th - 20;
+  let arrowSide = 'bottom';
+
+  if (top < 10) {
+    top = cy + bbox.height / 2 + 16;
+    arrowSide = 'top';
+  }
+  if (left < 10) left = 10;
+  if (left + tw > mapW - 10) left = mapW - tw - 10;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+
+  const arrowLeft = Math.max(20, Math.min(cx - left, tw - 20));
+  if (arrowSide === 'bottom') {
+    tooltipArrow.style.cssText = `bottom: -7px; left: ${arrowLeft}px; top: auto;`;
+  } else {
+    tooltipArrow.style.cssText = `top: -7px; left: ${arrowLeft}px; bottom: auto; box-shadow: -2px -2px 0 rgba(232,213,160,0.5);`;
+  }
+}
+
+function hideTooltip() {
+  tooltip.classList.remove('active');
+  tooltip.style.display = 'none';
+}
+
+function showCatapult() {
+  hideTooltip();
+  const o = document.getElementById('catapultOverlay');
+  const s = document.getElementById('catapultStone');
+  const m = document.getElementById('catapultMayor');
+  const r = document.getElementById('catapultResult');
+  const c = document.getElementById('catapultClose');
+  s.className = 'catapult-stone';
+  m.className = 'catapult-mayor';
+  r.className = 'catapult-result';
+  c.className = 'catapult-close';
+  o.classList.add('active');
+  setTimeout(() => {
+    s.classList.add('launched');
+    m.classList.add('hit');
+    r.classList.add('show');
+    c.classList.add('show');
+  }, 500);
+}
+function hideCatapult() {
+  document.getElementById('catapultOverlay').classList.remove('active');
+}
+</script>
+
+</body>
+</html>
